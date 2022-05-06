@@ -12,7 +12,7 @@ env:
   IMAGE_NAME: bsa-${{ github.ref_name }}
   LABEL: ${{ github.ref_name }}
   ORG: sap-samples
-  PATHFORTEST: ghcr.io/sap-samples/bsa-${{ github.ref_name }}:${{ github.ref_name }}
+  PATHFORTEST: ghcr.io/sap-samples/btp-setup-automator/bsa-${{ github.ref_name }}:${{ github.ref_name }}
 
 jobs:
   build-temporary-image:
@@ -47,8 +47,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-#HACKHACKHACK: The image path in the next step cannot be dynamically fetched due to context visibility (env not visible)
-# We therefore use the output parameters which can be referenced via needs
+      #HACKHACKHACK: The image path in the next step cannot be dynamically fetched due to context visibility (env not visible)
+      # We therefore use the output parameters which can be referenced via needs
       - id: set-image-path
         name: Set image path to output
         run: echo "::set-output name=image_path::${{ env.PATHFORTEST }}"
