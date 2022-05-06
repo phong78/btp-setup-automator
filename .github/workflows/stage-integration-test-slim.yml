@@ -62,7 +62,7 @@ jobs:
     env:
       BTPSA_PARAM_MYEMAIL: ${{ secrets.BTPSA_PARAM_MYEMAIL }}
       BTPSA_PARAM_GLOBALACCOUNT: ${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}
-      BTPSA_PARAM_MYPASSWORD: "testpw"
+      BTPSA_PARAM_MYPASSWORD: ${{ secrets.BTPSA_PARAM_MYPASSWORD }}
     steps:
       - name: "Integration test 02: Deploy full-stack CAP application running in SAP Launchpad"
         if: ${{ always() }}
