@@ -12,6 +12,7 @@ env:
   IMAGE_NAME: bsa-${{ github.ref_name }}
   LABEL: ${{ github.ref_name }}
   ORG: sap-samples
+  PATHFORTEST: ghcr.io/sap-samples/${{ github.repository }}/bsa-${{ github.ref_name }}:${{ github.ref_name }}
 
 jobs:
   build-temporary-image:
@@ -49,7 +50,7 @@ jobs:
     needs: build-temporary-image
     runs-on: ubuntu-latest
     container:
-      image: ${{ env.REGISTRY }}/${{ env.ORG }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ env.LABEL }}
+      image: ${{ env.PATHFORTEST }}
       options: --user root
     env:
       BTPSA_PARAM_MYEMAIL: ${{ secrets.BTPSA_PARAM_MYEMAIL }}
