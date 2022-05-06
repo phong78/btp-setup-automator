@@ -56,7 +56,7 @@ jobs:
           script: |
             const imageName = process.env.IMAGE; 
             const {owner, repo} = context.repo; 
-            const packageName = '${repo}/${imageName}';
+            const packageName = `${repo}/${imageName}`;
 
             const result = await github.rest.packages.getPackageForOrganization({
               package_type: "container",
