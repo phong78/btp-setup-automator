@@ -12,7 +12,7 @@ env:
   IMAGE_NAME: bsa-${{ github.ref_name }}
   LABEL: ${{ github.ref_name }}
   ORG: sap-samples
-  
+
 jobs:
   build-temporary-image:
     runs-on: ubuntu-latest
@@ -44,8 +44,41 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-  Delete-temporary-image:
+
+  integration-test-for-pr:
     needs: build-temporary-image
+    runs-on: ubuntu-latest
+    container:
+      image: ${{ env.REGISTRY }}/${{ env.ORG }}/${{ github.repository }}/${{ env.IMAGE_NAME }}:${{ env.LABEL }}
+      options: --user root
+    env:
+      BTPSA_PARAM_MYEMAIL: ${{ secrets.BTPSA_PARAM_MYEMAIL }}
+      BTPSA_PARAM_GLOBALACCOUNT: ${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}
+      BTPSA_PARAM_MYPASSWORD: ${{ secrets.BTPSA_PARAM_MYPASSWORD }}
+    steps:
+      - name: "Integration test 02: Deploy full-stack CAP application running in SAP Launchpad"
+        if: ${{ always() }}
+        working-directory: /home/user
+        shell: bash
+        run: ./btpsa -parameterfile 'https://raw.githubusercontent.com/SAP-samples/btp-setup-automator/main/integrationtests/parameterfiles/integrationtest02.json'
+      - name: "Integration test 04: Only app subscriptions"
+        if: ${{ always() }}
+        working-directory: /home/user
+        shell: bash
+        run: ./btpsa -parameterfile 'https://raw.githubusercontent.com/SAP-samples/btp-setup-automator/main/integrationtests/parameterfiles/integrationtest04.json'
+      - name: "Integration test 05: Only one service without app subscriptions and with an admin, that is the same like the one logging into the script."
+        if: ${{ always() }}
+        working-directory: /home/user
+        shell: bash
+        run: ./btpsa -parameterfile 'https://raw.githubusercontent.com/SAP-samples/btp-setup-automator/main/integrationtests/parameterfiles/integrationtest05.json'
+      - name: "Integration test 06: create service keys"
+        if: ${{ always() }}
+        working-directory: /home/user
+        shell: bash
+        run: ./btpsa -parameterfile 'https://raw.githubusercontent.com/SAP-samples/btp-setup-automator/main/integrationtests/parameterfiles/integrationtest06.json'
+
+  delete-temporary-image:
+    needs: integration-test-for-pr
     runs-on: ubuntu-latest
     steps:
       - uses: actions/github-script@v6
