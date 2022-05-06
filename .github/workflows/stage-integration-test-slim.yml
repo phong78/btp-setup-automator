@@ -12,7 +12,7 @@ env:
   IMAGE_NAME: bsa-${{ github.ref_name }}
   LABEL: ${{ github.ref_name }}
   ORG: sap-samples
-  PATHFORTEST: ghcr.io/sap-samples/${{ github.repository }}/bsa-${{ github.ref_name }}:${{ github.ref_name }}
+  PATHFORTEST: ghcr.io/sap-samples/bsa-${{ github.ref_name }}:${{ github.ref_name }}
 
 jobs:
   build-temporary-image:
@@ -62,7 +62,7 @@ jobs:
     env:
       BTPSA_PARAM_MYEMAIL: ${{ secrets.BTPSA_PARAM_MYEMAIL }}
       BTPSA_PARAM_GLOBALACCOUNT: ${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}
-      BTPSA_PARAM_MYPASSWORD: ${{ secrets.BTPSA_PARAM_MYPASSWORD }}
+      BTPSA_PARAM_MYPASSWORD: "testpw"
     steps:
       - name: "Integration test 02: Deploy full-stack CAP application running in SAP Launchpad"
         if: ${{ always() }}
