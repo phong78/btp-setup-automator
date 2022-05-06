@@ -1,5 +1,12 @@
-name: BTPSA - Integration Test for PRs (branches - slim)
+name: PR Integration Test (branches - slim)
+# INTEGRATION TEST FOR PULL REQUESTS ON BRANCHES != MAIN
 # This file represents a slim version of the "BTP Setup Automator" integration tests
+# for PRs on branches
+# It executes the following steps:
+# - based on the branch it creates a temporary Docker image and pushes it to the GH registry
+# - it executes the integration tests on the temporary docker image
+# - it deletes the temporary Docker image after execution
+#
 # All tests are executed in sequence on one BTP account to avoid entitlement limits
 # This is why not matrix strategy is used
 # The steps of a job must execute in any case, so we use always()
@@ -62,7 +69,8 @@ jobs:
     env:
       BTPSA_PARAM_MYEMAIL: ${{ secrets.BTPSA_PARAM_MYEMAIL }}
       BTPSA_PARAM_GLOBALACCOUNT: ${{ secrets.BTPSA_PARAM_GLOBALACCOUNT }}
-      BTPSA_PARAM_MYPASSWORD: ${{ secrets.BTPSA_PARAM_MYPASSWORD }}
+# Trigger an error
+      BTPSA_PARAM_MYPASSWORD: "test1234"
     steps:
       - name: "Integration test 02: Deploy full-stack CAP application running in SAP Launchpad"
         if: ${{ always() }}
@@ -86,6 +94,7 @@ jobs:
         run: ./btpsa -parameterfile 'https://raw.githubusercontent.com/SAP-samples/btp-setup-automator/main/integrationtests/parameterfiles/integrationtest06.json'
 
   delete-temporary-image:
+    if: ${{ success() }} || ${{ failure() }}
     needs: integration-test-for-pr
     runs-on: ubuntu-latest
     steps:
