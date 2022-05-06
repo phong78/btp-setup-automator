@@ -54,9 +54,10 @@ jobs:
         with:
           github-token: ${{ secrets.DELETE_IMAGE_TOKEN }}
           script: |
-            const packageName = process.env.IMAGE; 
+            const imageName = process.env.IMAGE; 
             const {owner, repo} = context.repo; 
-            
+            const packageName = '${repo}/${imageName}';
+
             const result = await github.rest.packages.getPackageForOrganization({
               package_type: "container",
               package_name: packageName,
